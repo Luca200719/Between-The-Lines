@@ -12,8 +12,8 @@ public struct DialogueLine {
 }
 
 public class Dialogue : MonoBehaviour {
-    TextMeshProUGUI textBoxA;
-    TextMeshProUGUI textBoxB;
+    TextMeshPro textBoxA;
+    TextMeshPro textBoxB;
     //Animator animatorA;
     //Animator animatorB;
     string talkingParam = "IsTalking";
@@ -21,8 +21,8 @@ public class Dialogue : MonoBehaviour {
     public DialogueLine[] lines;
 
     public void Start() {
-        textBoxA = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-        textBoxB = transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+        textBoxA = transform.GetChild(0).GetComponent<TextMeshPro>();
+        textBoxB = transform.GetChild(1).GetComponent<TextMeshPro>();
         //animatorA = transform.GetChild(2).GetComponent<Animator>();
         //animatorB = transform.GetChild(3).GetComponent<Animator>();
 
