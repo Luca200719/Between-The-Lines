@@ -7,11 +7,11 @@ public class DialogueManager : MonoBehaviour {
 
     void Awake() {
         if (dialogueManager != null && dialogueManager != this) {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
         else {
             dialogueManager = this;
-            DontDestroyOnLoad(this.gameObject);
+            DontDestroyOnLoad(gameObject);
         }
     }
 
