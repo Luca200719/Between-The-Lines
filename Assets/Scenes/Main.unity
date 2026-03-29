@@ -1063,8 +1063,8 @@ MonoBehaviour:
   title: Empathy
   conversationText: 'Lena: I studied for two weeks and still failed.
 
-    Omar:
-    That sounds really discouraging.
+    Omar: That
+    sounds really discouraging.
 
     Lena: Everyone else just gets it naturally.
 
@@ -5635,7 +5635,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48.2
+  m_fontSize: 54.25
   m_fontSizeBase: 48
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -10918,7 +10918,7 @@ GameObject:
   - component: {fileID: 1861931665}
   m_Layer: 0
   m_Name: Dialogue Manager
-  m_TagString: Untagged
+  m_TagString: Dialogue Manager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
