@@ -6,6 +6,7 @@ TagManager:
   tags:
   - audio
   - Person Square
+  - Person Sprite
   layers:
   - Default
   - TransparentFX
