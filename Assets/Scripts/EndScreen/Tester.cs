@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using SocialScenarios;
-using Unity.VisualScripting;
 
 public class Tester : MonoBehaviour
 {
@@ -19,8 +18,7 @@ public class Tester : MonoBehaviour
     {
         yield return null;
         yield return null;
-
-        float[] testScores = score.FinalScores;
+        float[] testScores = RoundHistory.Current.FinalScores;
         scoreTracker.SubmitScores(testScores);
         endScreen.Show();
         scoreBars.Show(testScores);

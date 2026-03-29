@@ -10,6 +10,8 @@ namespace SocialScenarios {
     /// </summary>
     [Serializable]
     public class RoundScore {
+    public class RoundScore : Monobehaviour
+    {
         public int Round;
         public float Assertiveness;
         public float Empathy;

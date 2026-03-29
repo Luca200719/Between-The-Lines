@@ -41,6 +41,7 @@ public class ScenarioManager : MonoBehaviour {
     // RoundHistory is a plain C# class with its own singleton — use Current
     // rather than a separate local instance so all systems read the same data.
     private RoundHistory roundHistory => RoundHistory.Current;
+    private RoundHistory roundHistory = RoundHistory.Current;
     private AIScorer scorer;
     public HashSet<int> usedIds = new();
     private int roundCount = 0;
@@ -65,6 +66,7 @@ public class ScenarioManager : MonoBehaviour {
     // ── Lifecycle ─────────────────────────────────────────────────────
 
     void Awake() {
+        DontDestroyOnLoad(this);
         if (Instance != null && Instance != this) {
             Destroy(gameObject);
             return;
@@ -172,7 +174,8 @@ public class ScenarioManager : MonoBehaviour {
 
         yield return FadeOverlay(false);
 
-        if (roundCount >= MaxRounds) {
+        if (roundCount >= MaxRounds)
+        {
             Debug.Log("Session complete. Final profile: " + profile);
 
             roundHistory.StoreFinal(profile);
@@ -183,6 +186,8 @@ public class ScenarioManager : MonoBehaviour {
             FinalOverall = roundHistory.FinalOverall;
 
             RoundScoreDisplay.Instance?.ShowFinal(roundHistory, profile);
+            RoundHistory.Current.StoreFinal(profile);
+            SceneFader.Instance.FadeToScene(2);
             yield break;
         }
 
