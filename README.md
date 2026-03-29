@@ -1,2 +1,2 @@
 # BetweenTheLines
-HackPSU 2026
+Click on Playable Demo to play the game!
