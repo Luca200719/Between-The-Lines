@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using SocialScenarios;
+using Unity.VisualScripting;
 
 public class Tester : MonoBehaviour
 {
@@ -7,8 +9,11 @@ public class Tester : MonoBehaviour
     public EndScreen endScreen;
     public ScoreBars scoreBars;
 
+    RoundHistory score;
+
     void Start()
     {
+        score = GameObject.FindWithTag("Dialogue Manager").GetComponent<RoundHistory>();
         StartCoroutine(RunTest());
     }
 
@@ -17,7 +22,7 @@ public class Tester : MonoBehaviour
         yield return null;
         yield return null;
 
-        float[] testScores = new float[] { 7.5f, 6.0f, 8.0f, 4.5f, 9.0f };
+        float[] testScores = score.FinalScores;
         scoreTracker.SubmitScores(testScores);
         endScreen.Show();
         scoreBars.Show(testScores);
