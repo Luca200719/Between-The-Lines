@@ -130,7 +130,6 @@ public class ScenarioManager : MonoBehaviour {
 
         submitButton.interactable = true;
 
-        // Answer was not meaningful — flash a message and let the user try again
         if (error == "INVALID_ANSWER") {
             StartCoroutine(FlashValidation("Please enter a relevant response."));
             yield break;
