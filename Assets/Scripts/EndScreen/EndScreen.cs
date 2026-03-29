@@ -7,6 +7,7 @@ public class EndScreen : MonoBehaviour
     [Header("References")]
     public ScoreTracker scoreTracker;
     public RadarChart endRadarChart;
+    public ScoreBars scoreBars;
 
     [Header("Score Labels")]
     public TextMeshProUGUI assertivenessText;
@@ -51,6 +52,9 @@ public class EndScreen : MonoBehaviour
         worstCategoryText.text = "Your growth area: "     + names[worstIdx];
 
         endRadarChart.UpdateScoresFromArray(arr);
+
+        // Feed the same scores into the bars
+        scoreBars.Show(arr);
     }
 
     public void Hide()

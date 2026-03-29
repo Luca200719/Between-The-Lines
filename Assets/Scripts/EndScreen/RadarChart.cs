@@ -4,21 +4,52 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CanvasRenderer))]
 public class RadarChart : Graphic
 {
-    [Range(0, 10)] public float assertiveness = 6f;
-    [Range(0, 10)] public float empathy = 7f;
-    [Range(0, 10)] public float emotionalRegulation = 5f;
-    [Range(0, 10)] public float socialConfidence = 8f;
-    [Range(0, 10)] public float prosocialIntent = 4f;
+    [Range(0, 10)] public float assertiveness = 0f;
+    [Range(0, 10)] public float empathy = 0f;
+    [Range(0, 10)] public float emotionalRegulation = 0f;
+    [Range(0, 10)] public float socialConfidence = 0f;
+    [Range(0, 10)] public float prosocialIntent = 0f;
 
     public Color fillColor = new Color(0.32f, 0.29f, 0.71f, 0.25f);
     public Color outlineColor = new Color(0.32f, 0.29f, 0.71f, 1f);
-    public Color gridColor = new Color(0f, 0f, 0f, 0.1f);
-    public float outlineThickness = 2f;
+    public Color gridColor = new Color(0.7f, 0.7f, 0.7f, 0.5f);
+    public float outlineThickness = 3f;
+    public float gridThickness = 1.5f;
+    public float animationSpeed = 5f;
+
+    private float[] targetScores = new float[5];
+    private float[] animatedScores = new float[] { 0, 0, 0, 0, 0 };
+    private bool animating = false;
 
     private float[] Scores => new float[]
     {
         assertiveness, empathy, emotionalRegulation, socialConfidence, prosocialIntent
     };
+
+    void Update()
+    {
+        if (!animating) return;
+
+        bool done = true;
+        for (int i = 0; i < 5; i++)
+        {
+            animatedScores[i] = Mathf.MoveTowards(
+                animatedScores[i],
+                targetScores[i],
+                Time.deltaTime * animationSpeed * 1f
+            );
+            if (animatedScores[i] < targetScores[i]) done = false;
+        }
+
+        assertiveness =         animatedScores[0];
+        empathy =               animatedScores[1];
+        emotionalRegulation =   animatedScores[2];
+        socialConfidence =      animatedScores[3];
+        prosocialIntent =       animatedScores[4];
+
+        SetVerticesDirty();
+        if (done) animating = false;
+    }
 
     protected override void OnPopulateMesh(VertexHelper vh)
     {
@@ -31,11 +62,23 @@ public class RadarChart : Graphic
         for (int level = 1; level <= 5; level++)
         {
             float r = radius * level / 5f;
-            DrawPolygonOutline(vh, cx, cy, r, n, gridColor, 2f);
+            DrawPolygonOutline(vh, cx, cy, r, n, gridColor, gridThickness);
+        }
+
+        for (int i = 0; i < n; i++)
+        {
+            Vector2 pt = GetPoint(cx, cy, radius, i, n);
+            DrawLine(vh, new Vector2(cx, cy), pt, gridColor, gridThickness);
         }
 
         DrawFilledPolygon(vh, cx, cy, radius, n, Scores, fillColor);
         DrawDataOutline(vh, cx, cy, radius, n, Scores, outlineColor, outlineThickness);
+
+        for (int i = 0; i < n; i++)
+        {
+            Vector2 pt = GetPoint(cx, cy, radius * Scores[i] / 10f, i, n);
+            DrawDot(vh, pt, outlineColor, 5f);
+        }
     }
 
     Vector2 GetPoint(float cx, float cy, float r, int i, int n)
@@ -100,14 +143,34 @@ public class RadarChart : Graphic
         vh.AddTriangle(idx, idx + 2, idx + 3);
     }
 
+    void DrawDot(VertexHelper vh, Vector2 center, Color col, float radius)
+    {
+        int segments = 8;
+        int startIdx = vh.currentVertCount;
+        UIVertex v = UIVertex.simpleVert;
+        v.color = col;
+        v.position = new Vector3(center.x, center.y);
+        vh.AddVert(v);
+
+        for (int i = 0; i < segments; i++)
+        {
+            float angle = Mathf.PI * 2f * i / segments;
+            v.position = new Vector3(
+                center.x + radius * Mathf.Cos(angle),
+                center.y + radius * Mathf.Sin(angle)
+            );
+            vh.AddVert(v);
+        }
+
+        for (int i = 0; i < segments; i++)
+            vh.AddTriangle(startIdx, startIdx + i + 1, startIdx + (i + 1) % segments + 1);
+    }
+
     public void UpdateScores(float a, float e, float er, float sc, float pi)
     {
-        assertiveness = a;
-        empathy = e;
-        emotionalRegulation = er;
-        socialConfidence = sc;
-        prosocialIntent = pi;
-        SetVerticesDirty();
+        targetScores = new float[] { a, e, er, sc, pi };
+        animatedScores = new float[] { 0, 0, 0, 0, 0 };
+        animating = true;
     }
 
     public void UpdateScoresFromArray(float[] scores)
