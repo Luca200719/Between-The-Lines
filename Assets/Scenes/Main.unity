@@ -119,6 +119,39 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &2093984
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2093985}
+  m_Layer: 0
+  m_Name: Conversations
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2093985
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2093984}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1136987354}
+  - {fileID: 1844728566}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &96116990
 GameObject:
   m_ObjectHideFlags: 0
@@ -130,7 +163,7 @@ GameObject:
   - component: {fileID: 96116992}
   - component: {fileID: 96116991}
   m_Layer: 0
-  m_Name: PlayerSpeaker
+  m_Name: Speaker
   m_TagString: audio
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -242,7 +275,7 @@ Transform:
   m_GameObject: {fileID: 96116990}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.0604, y: -0.57735, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1266,6 +1299,168 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1015812872}
   m_CullTransparentMesh: 1
+--- !u!1001 &1136987353
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2093985}
+    m_Modifications:
+    - target: {fileID: 148197710328083463, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: title
+      value: Assertiveness
+      objectReference: {fileID: 0}
+    - target: {fileID: 148197710328083463, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: empathy
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 148197710328083463, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: assertiveness
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 148197710328083463, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: prosocialIntent
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 148197710328083463, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: conversationText
+      value: 'Marcus: Can you cover my shift Saturday?
+
+        Priya: I might have
+        plans already.
+
+        Marcus: I told my boss you''d do it.
+
+        Priya:
+        You told them without asking me?
+
+        Marcus: You never have anything
+        going on.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 148197710328083463, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: socialConfidence
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 148197710328083463, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: emotionalRegulation
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2079482142211392714, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2079482142211392714, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2844142113988038340, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_text
+      value: Priya
+      objectReference: {fileID: 0}
+    - target: {fileID: 3837153382870902660, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_Name
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4609953761334364466, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4609953761334364466, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5899110517213357791, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_text
+      value: Marcus
+      objectReference: {fileID: 0}
+    - target: {fileID: 6081847203816262528, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: question
+      value: Why is it hard to say no when someone assumes you will?
+      objectReference: {fileID: 0}
+    - target: {fileID: 6081847203816262528, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: lines.Array.data[0].text
+      value: Can you cover my shift Saturday?
+      objectReference: {fileID: 0}
+    - target: {fileID: 6081847203816262528, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: lines.Array.data[1].text
+      value: I told my boss you'd do it.
+      objectReference: {fileID: 0}
+    - target: {fileID: 6081847203816262528, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: lines.Array.data[2].text
+      value: You told them without asking me?
+      objectReference: {fileID: 0}
+    - target: {fileID: 6081847203816262528, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: lines.Array.data[3].text
+      value: You never have anything going on.
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6957488438409605048, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+    - targetCorrespondingSourceObject: {fileID: 9202055220917724964, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+  m_SourcePrefab: {fileID: 100100000, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+--- !u!4 &1136987354 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+  m_PrefabInstance: {fileID: 1136987353}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1136987355 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 148197710328083463, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+  m_PrefabInstance: {fileID: 1136987353}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d069101ecde95b9489347343bc5bcf43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SocialScenarios.DialogueEntry
 --- !u!1 &1213885862
 GameObject:
   m_ObjectHideFlags: 0
@@ -1330,7 +1525,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.14009432, g: 0.495, b: 0.14320754, a: 1}
     m_PressedColor: {r: 0.102774754, g: 0.368, b: 0.10609008, a: 1}
     m_SelectedColor: {r: 0.1764706, g: 0.62352943, b: 0.18039216, a: 1}
-    m_DisabledColor: {r: 0.1764706, g: 0.62352943, b: 0.18039216, a: 0}
+    m_DisabledColor: {r: 0.1764706, g: 0.62352943, b: 0.18039216, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -1617,6 +1812,172 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RectMask2D
   m_Padding: {x: -8, y: -5, z: -8, w: -5}
   m_Softness: {x: 0, y: 0}
+--- !u!1001 &1844728565
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2093985}
+    m_Modifications:
+    - target: {fileID: 148197710328083463, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: id
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 148197710328083463, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: title
+      value: Assertiveness
+      objectReference: {fileID: 0}
+    - target: {fileID: 148197710328083463, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: empathy
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 148197710328083463, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: assertiveness
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 148197710328083463, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: prosocialIntent
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 148197710328083463, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: conversationText
+      value: 'Marcus: Can you cover my shift Saturday?
+
+        Priya: I might have
+        plans already.
+
+        Marcus: I told my boss you''d do it.
+
+        Priya:
+        You told them without asking me?
+
+        Marcus: You never have anything
+        going on.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 148197710328083463, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: socialConfidence
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 148197710328083463, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: emotionalRegulation
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2079482142211392714, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2079482142211392714, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2844142113988038340, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_text
+      value: Priya
+      objectReference: {fileID: 0}
+    - target: {fileID: 3837153382870902660, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_Name
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4609953761334364466, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4609953761334364466, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5899110517213357791, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: m_text
+      value: Marcus
+      objectReference: {fileID: 0}
+    - target: {fileID: 6081847203816262528, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: question
+      value: Why is it hard to say no when someone assumes you will?
+      objectReference: {fileID: 0}
+    - target: {fileID: 6081847203816262528, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: lines.Array.data[0].text
+      value: Can you cover my shift Saturday?
+      objectReference: {fileID: 0}
+    - target: {fileID: 6081847203816262528, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: lines.Array.data[1].text
+      value: I told my boss you'd do it.
+      objectReference: {fileID: 0}
+    - target: {fileID: 6081847203816262528, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: lines.Array.data[2].text
+      value: You told them without asking me?
+      objectReference: {fileID: 0}
+    - target: {fileID: 6081847203816262528, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      propertyPath: lines.Array.data[3].text
+      value: You never have anything going on.
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6957488438409605048, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+    - targetCorrespondingSourceObject: {fileID: 9202055220917724964, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+  m_SourcePrefab: {fileID: 100100000, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+--- !u!4 &1844728566 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1153034496134950926, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+  m_PrefabInstance: {fileID: 1844728565}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1844728567 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 148197710328083463, guid: d7d8def9ce822164b8ad5fc7c97ac688, type: 3}
+  m_PrefabInstance: {fileID: 1844728565}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d069101ecde95b9489347343bc5bcf43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SocialScenarios.DialogueEntry
 --- !u!1 &1861931662
 GameObject:
   m_ObjectHideFlags: 0
@@ -1844,13 +2205,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SocialScenarios.ScenarioManager
   dialogues:
-  - {fileID: 0}
+  - {fileID: 1136987355}
+  - {fileID: 1844728567}
+  startId: 0
   overlayCanvasGroup: {fileID: 966159098}
   promptText: {fileID: 863455183}
   answerInput: {fileID: 1621437092}
   submitButton: {fileID: 1213885864}
-  cameraTransform: {fileID: 0}
-  cameraMoveDuration: 1.5
   fadeDuration: 0.4
 --- !u!114 &2020886346
 MonoBehaviour:
@@ -1877,3 +2238,4 @@ SceneRoots:
   - {fileID: 966159097}
   - {fileID: 889327066}
   - {fileID: 2020886344}
+  - {fileID: 2093985}

@@ -448,6 +448,8 @@ RectTransform:
   - {fileID: 8251669812558134718}
   - {fileID: 4609953761334364466}
   - {fileID: 6456054044221557978}
+  - {fileID: 8272581001968300399}
+  - {fileID: 4177297446219663131}
   m_Father: {fileID: 1153034496134950926}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -659,8 +661,6 @@ Transform:
   - {fileID: 2133617564471312358}
   - {fileID: 1663417883529362717}
   - {fileID: 2245880523928295340}
-  - {fileID: 8272581001968300399}
-  - {fileID: 4177297446219663131}
   - {fileID: 756686523824521112}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -691,6 +691,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: f64500dd35ee7e24db73d094752c3766, type: 3}
   - {fileID: 8300000, guid: 49d0e63f5e46bb5408970463b4087d3c, type: 3}
   - {fileID: 8300000, guid: becdbf9d2da28ac43be3776cb2d29b0e, type: 3}
+  - {fileID: 8300000, guid: 8420870b291f5b24da2507956486adc7, type: 3}
+  - {fileID: 8300000, guid: 5190b8baf5b15604e84bb443df5a8ff4, type: 3}
+  - {fileID: 8300000, guid: bb56fe883a706fb44974aae70311b3b7, type: 3}
   audioClipA: {fileID: 0}
   audioClipB: {fileID: 0}
   lines:
@@ -1270,17 +1273,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6957488438409605048}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1153034496134950926}
+  m_Father: {fileID: 2133617564471312358}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -5, y: -4}
-  m_SizeDelta: {x: 10, y: 2}
+  m_AnchorMin: {x: 0.1, y: 0}
+  m_AnchorMax: {x: 0.4, y: 0.1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &5963626825651674511
 MeshRenderer:
@@ -1362,8 +1365,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4279843674
-  m_fontColor: {r: 0.354, g: 0.23131777, b: 0.09841202, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1907,12 +1910,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1153034496134950926}
+  m_Father: {fileID: 2133617564471312358}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5, y: -4}
-  m_SizeDelta: {x: 10, y: 2}
+  m_AnchorMin: {x: 0.6, y: 0}
+  m_AnchorMax: {x: 0.9, y: 0.1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &9141129142003299645
 MeshRenderer:
@@ -1992,8 +1995,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4279843674
-  m_fontColor: {r: 0.354, g: 0.23131777, b: 0.09841202, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

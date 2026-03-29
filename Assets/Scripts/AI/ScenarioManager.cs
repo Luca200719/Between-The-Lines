@@ -21,6 +21,9 @@ public class ScenarioManager : MonoBehaviour {
     [Header("Dialogue Cubes")]
     public List<DialogueEntry> dialogues = new();
 
+    [Header("Starting Dialogue")]
+    public int startId = 0;
+
     [Header("Canvas Overlay")]
     public CanvasGroup overlayCanvasGroup;
     public TMP_Text promptText;
@@ -28,14 +31,12 @@ public class ScenarioManager : MonoBehaviour {
     public Button submitButton;
 
     [Header("Camera")]
-    public Transform cameraTransform;
-    public float cameraMoveDuration = 1.5f;
     public float fadeDuration = 0.4f;
 
     // ── State ─────────────────────────────────────────────────────────
     private SocialProfile profile = new();
     private AIScorer scorer;
-    private HashSet<int> usedIds = new();
+    public HashSet<int> usedIds = new();
     private int roundCount = 0;
     private const int MaxRounds = 5;
 
@@ -54,6 +55,13 @@ public class ScenarioManager : MonoBehaviour {
         overlayCanvasGroup.blocksRaycasts = false;
 
         submitButton.onClick.AddListener(OnSubmit);
+
+        // Snap camera to the opening dialogue position
+        DialogueEntry start = dialogues.Find(d => d.id == startId);
+        if (start != null)
+            CameraController.Instance.SnapTo(start.cameraTarget);
+        else
+            Debug.LogWarning($"ScenarioManager: no DialogueEntry found with startId={startId}.");
     }
 
     // ── Called by Dialogue.cs when a conversation finishes ────────────
@@ -125,11 +133,15 @@ public class ScenarioManager : MonoBehaviour {
             yield break;
         }
 
-        yield return MoveCamera(next.cameraTarget);
+        bool arrived = false;
+        CameraController.Instance.MoveTo(next.cameraTarget, () => arrived = true);
+        yield return new WaitUntil(() => arrived);
 
-        // Camera has arrived — your DialogueManager will pick up from here
-        // via its existing queue, or call next.GetComponent<Dialogue>().Play()
-        Debug.Log($"Arrived at: {next.title}");
+        Dialogue nextDialogue = next.GetComponent<Dialogue>();
+        if (nextDialogue != null)
+            DialogueManager.dialogueManager.PlayDialogue(nextDialogue);
+        else
+            Debug.LogWarning($"No Dialogue component on cube: {next.title}");
     }
 
     // ── Matching ──────────────────────────────────────────────────────
@@ -158,25 +170,6 @@ public class ScenarioManager : MonoBehaviour {
         }
         float denom = Mathf.Sqrt(magA) * Mathf.Sqrt(magB);
         return denom < 1e-6f ? 0f : dot / denom;
-    }
-
-    // ── Camera ────────────────────────────────────────────────────────
-
-    private IEnumerator MoveCamera(Transform target) {
-        Vector3 startPos = cameraTransform.position;
-        Quaternion startRot = cameraTransform.rotation;
-        float elapsed = 0f;
-
-        while (elapsed < cameraMoveDuration) {
-            elapsed += Time.deltaTime;
-            float t = Mathf.SmoothStep(0f, 1f, elapsed / cameraMoveDuration);
-            cameraTransform.position = Vector3.Lerp(startPos, target.position, t);
-            cameraTransform.rotation = Quaternion.Slerp(startRot, target.rotation, t);
-            yield return null;
-        }
-
-        cameraTransform.position = target.position;
-        cameraTransform.rotation = target.rotation;
     }
 
     // ── Fade ──────────────────────────────────────────────────────────

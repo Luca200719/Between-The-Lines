@@ -41,8 +41,6 @@ public class Dialogue : MonoBehaviour {
 
         bubbleBoxA.gameObject.SetActive(false);
         bubbleBoxB.gameObject.SetActive(false);
-
-        DialogueManager.dialogueManager.Enqueue(this);
     }
 
     public bool IsPlaying { get; private set; }

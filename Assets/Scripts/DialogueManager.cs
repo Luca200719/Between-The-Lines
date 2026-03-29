@@ -1,3 +1,4 @@
+using SocialScenarios;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,32 +9,29 @@ public class DialogueManager : MonoBehaviour {
     void Awake() {
         if (dialogueManager != null && dialogueManager != this) {
             Destroy(gameObject);
+            return;
         }
-        else {
-            dialogueManager = this;
-            DontDestroyOnLoad(gameObject);
-        }
+        dialogueManager = this;
+        DontDestroyOnLoad(gameObject);
     }
 
+    void Start() {
+        List<Dialogue> all = new(FindObjectsByType<Dialogue>(FindObjectsSortMode.None));
 
-    Queue<Dialogue> _queue = new();
-    bool _isPlaying;
+        Dialogue picked = all[Random.Range(0, all.Count)];
 
-    public void Enqueue(Dialogue dialogue) {
-        if (dialogue == null) return;
-        _queue.Enqueue(dialogue);
-        if (!_isPlaying) StartCoroutine(PlayQueue());
+        // Mark it as used in ScenarioManager so it won't be picked again
+        DialogueEntry entry = picked.GetComponent<DialogueEntry>();
+        if (entry != null && ScenarioManager.Instance != null)
+            ScenarioManager.Instance.usedIds.Add(entry.id);
+
+        // Move camera then play
+        if (entry != null && CameraController.Instance != null)
+            CameraController.Instance.MoveTo(entry.cameraTarget, () => picked.Play());
+        else
+            picked.Play();
     }
 
-    IEnumerator PlayQueue() {
-        _isPlaying = true;
-
-        while (_queue.Count > 0) {
-            Dialogue next = _queue.Dequeue();
-            next.Play();
-            yield return new WaitUntil(() => !next.IsPlaying);
-        }
-
-        _isPlaying = false;
-    }
+    /// <summary>Called by ScenarioManager to play a specific dialogue after camera arrives.</summary>
+    public void PlayDialogue(Dialogue dialogue) => dialogue.Play();
 }
