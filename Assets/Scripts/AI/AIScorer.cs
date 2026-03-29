@@ -9,7 +9,7 @@ namespace SocialScenarios {
         private const string API_URL = "https://api.anthropic.com/v1/messages";
         private const string MODEL = "claude-haiku-4-5-20251001";
 
-        string apiKey = "";
+        string apiKey = "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";
 
         public IEnumerator ScoreRound(
             string conversationContext,
