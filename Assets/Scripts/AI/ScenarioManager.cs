@@ -38,15 +38,29 @@ public class ScenarioManager : MonoBehaviour {
 
     // ── State ─────────────────────────────────────────────────────────
     private SocialProfile profile = new();
-    private RoundHistory roundHistory = new();
+    // RoundHistory is a plain C# class with its own singleton — use Current
+    // rather than a separate local instance so all systems read the same data.
+    private RoundHistory roundHistory => RoundHistory.Current;
     private AIScorer scorer;
     public HashSet<int> usedIds = new();
     private int roundCount = 0;
     private const int MaxRounds = 5;
 
+    // ── Final Results (readable from Inspector or any script via ScenarioManager.Instance) ──
+    /// <summary>Per-trait final scores 0-10. [0]=Assertiveness [1]=Empathy
+    /// [2]=EmotionalRegulation [3]=SocialConfidence [4]=ProsocialIntent</summary>
+    public float[] FinalScores = new float[5];
+    /// <summary>Average of all five FinalScores, 0-10.</summary>
+    public float FinalOverall;
+
     private string pendingConversation;
     private string pendingQuestion;
     private DialogueEntry pendingEntry;
+
+    // FIX 1: Cache CanvasGroups for validation texts at Awake time,
+    // adding the component if missing. TMP_Text has no .alpha property.
+    private CanvasGroup validationTextGroup;
+    private CanvasGroup validationBubbleGroup;
 
     // ── Lifecycle ─────────────────────────────────────────────────────
 
@@ -57,14 +71,23 @@ public class ScenarioManager : MonoBehaviour {
         }
         Instance = this;
 
+        // Reset the singleton so a scene reload starts with a clean history.
+        RoundHistory.Reset();
+
         scorer = GetComponent<AIScorer>();
 
         overlayCanvasGroup.alpha = 0f;
         overlayCanvasGroup.interactable = false;
         overlayCanvasGroup.blocksRaycasts = false;
 
-        validationText.alpha = 0f;
-        validationTextBubble.alpha = 0f;
+        // FIX 1: Use CanvasGroup (add if missing) instead of TMP_Text.alpha
+        validationTextGroup = validationText.GetComponent<CanvasGroup>()
+                             ?? validationText.gameObject.AddComponent<CanvasGroup>();
+        validationBubbleGroup = validationTextBubble.GetComponent<CanvasGroup>()
+                             ?? validationTextBubble.gameObject.AddComponent<CanvasGroup>();
+
+        validationTextGroup.alpha = 0f;
+        validationBubbleGroup.alpha = 0f;
 
         submitButton.onClick.AddListener(OnSubmit);
     }
@@ -151,8 +174,15 @@ public class ScenarioManager : MonoBehaviour {
 
         if (roundCount >= MaxRounds) {
             Debug.Log("Session complete. Final profile: " + profile);
+
+            roundHistory.StoreFinal(profile);
+
+            // Mirror final results onto this MonoBehaviour so they are
+            // visible in the Inspector and accessible via ScenarioManager.Instance.
+            FinalScores = roundHistory.FinalScores;
+            FinalOverall = roundHistory.FinalOverall;
+
             RoundScoreDisplay.Instance?.ShowFinal(roundHistory, profile);
-            // Add your end-of-session logic here
             yield break;
         }
 
@@ -179,19 +209,19 @@ public class ScenarioManager : MonoBehaviour {
         validationText.text = message;
         validationTextBubble.text = message;
 
-        CanvasGroup textGroup = validationText.GetComponent<CanvasGroup>(); 
-        CanvasGroup bubbleGroup = validationTextBubble.GetComponent<CanvasGroup>();
-
+        // FIX 2: Use the cached CanvasGroups (guaranteed non-null) instead of
+        // GetComponent calls that would return null if the component was absent.
         // Fade in
         float elapsed = 0f;
         while (elapsed < 0.2f) {
             elapsed += Time.deltaTime;
-            textGroup.alpha = Mathf.Clamp01(elapsed / 0.2f);
-            bubbleGroup.alpha = Mathf.Clamp01(elapsed / 0.2f);
+            float a = Mathf.Clamp01(elapsed / 0.2f);
+            validationTextGroup.alpha = a;
+            validationBubbleGroup.alpha = a;
             yield return null;
         }
-        validationText.alpha = 1f;
-        validationTextBubble.alpha = 1f;
+        validationTextGroup.alpha = 1f;
+        validationBubbleGroup.alpha = 1f;
 
         yield return new WaitForSeconds(1.5f);
 
@@ -199,12 +229,13 @@ public class ScenarioManager : MonoBehaviour {
         elapsed = 0f;
         while (elapsed < 0.2f) {
             elapsed += Time.deltaTime;
-            textGroup.alpha = Mathf.Clamp01(1f - elapsed / 0.2f);
-            bubbleGroup.alpha = Mathf.Clamp01(1f - elapsed / 0.2f);
+            float a = Mathf.Clamp01(1f - elapsed / 0.2f);
+            validationTextGroup.alpha = a;
+            validationBubbleGroup.alpha = a;
             yield return null;
         }
-        validationText.alpha = 0f;
-        validationTextBubble.alpha = 0f;
+        validationTextGroup.alpha = 0f;
+        validationBubbleGroup.alpha = 0f;
         validationText.text = "";
         validationTextBubble.text = "";
     }

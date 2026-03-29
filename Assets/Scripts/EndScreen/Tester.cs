@@ -9,11 +9,9 @@ public class Tester : MonoBehaviour
     public EndScreen endScreen;
     public ScoreBars scoreBars;
 
-    RoundHistory score;
-
     void Start()
     {
-        score = GameObject.FindWithTag("Dialogue Manager").GetComponent<RoundHistory>();
+        score = ScenarioManager.Instance.FinalOverall;
         StartCoroutine(RunTest());
     }
 

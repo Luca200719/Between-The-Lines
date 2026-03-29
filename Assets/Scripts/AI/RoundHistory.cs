@@ -2,16 +2,14 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SocialScenarios
-{
+namespace SocialScenarios {
 
     /// <summary>
     /// Stores the raw 0-1 scores for a single round and exposes
     /// them mapped to 0-10 for display.
     /// </summary>
     [Serializable]
-    public class RoundScore
-    {
+    public class RoundScore {
         public int Round;
         public float Assertiveness;
         public float Empathy;
@@ -43,11 +41,11 @@ namespace SocialScenarios
     ///   // After profile.Accumulate(scores) each round:
     ///   roundHistory.Record(scores, profile.RoundsCompleted);
     ///
-    ///   // At session end, pass both to the display:
+    ///   // At session end, call StoreFinal BEFORE ShowFinal:
+    ///   roundHistory.StoreFinal(profile);
     ///   RoundScoreDisplay.Instance?.ShowFinal(roundHistory, profile);
     /// </summary>
-    public class RoundHistory
-    {
+    public class RoundHistory {
 
         // ── Singleton ─────────────────────────────────────────────────
         /// <summary>Access from any scene via RoundHistory.Current.</summary>
@@ -59,23 +57,26 @@ namespace SocialScenarios
 
         // ── Final session scores (0-10) ───────────────────────────────
         /// <summary>
-        /// Set once at session end via StoreFinal(profile).
-        /// float[5]: { Assertiveness, Empathy, EmotionalRegulation,
-        ///              SocialConfidence, ProsocialIntent }  all 0-10.
+        /// Per-trait final scores, 0-10 scale.
+        /// Populated by StoreFinal(profile).
+        /// Index order: [0]=Assertiveness [1]=Empathy [2]=EmotionalRegulation
+        ///              [3]=SocialConfidence [4]=ProsocialIntent
         /// </summary>
         public float[] FinalScores = new float[5];
 
-        /// <summary>Average of FinalScores, 0-10.</summary>
+        /// <summary>
+        /// Simple average of all five FinalScores, 0-10 scale.
+        /// Populated by StoreFinal(profile).
+        /// This is the single publicly accessible overall session score.
+        /// </summary>
         public float FinalOverall;
 
         // ── Record a round ────────────────────────────────────────────
-        public void Record(float[] scores, int roundNumber)
-        {
+        public void Record(float[] scores, int roundNumber) {
             if (scores == null || scores.Length < 5)
                 throw new ArgumentException("Expected 5 scores.");
 
-            Rounds.Add(new RoundScore
-            {
+            Rounds.Add(new RoundScore {
                 Round = roundNumber,
                 Assertiveness = scores[0],
                 Empathy = scores[1],
@@ -87,13 +88,12 @@ namespace SocialScenarios
 
         // ── Store final result ────────────────────────────────────────
         /// <summary>
-        /// Call once at session end, passing the existing SocialProfile.
-        /// Converts its running-average vector (0-1) to a 0-10 array
-        /// and stores it in FinalScores.
+        /// Call once at session end, BEFORE ShowFinal, passing the existing SocialProfile.
+        /// Converts its running-average vector (0-1) to 0-10 values and stores them
+        /// in FinalScores[5] and FinalOverall.
         /// </summary>
-        public void StoreFinal(SocialProfile profile)
-        {
-            float[] vec = profile.ToVector();          // 0-1 running averages
+        public void StoreFinal(SocialProfile profile) {
+            float[] vec = profile.ToVector();   // 0-1 running averages
             FinalScores = new float[5];
             for (int i = 0; i < 5; i++)
                 FinalScores[i] = Mathf.Clamp(vec[i] * 10f, 0f, 10f);
