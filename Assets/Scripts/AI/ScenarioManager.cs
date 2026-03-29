@@ -38,6 +38,7 @@ public class ScenarioManager : MonoBehaviour {
 
     // ── State ─────────────────────────────────────────────────────────
     private SocialProfile profile = new();
+    private RoundHistory roundHistory = new();
     private AIScorer scorer;
     public HashSet<int> usedIds = new();
     private int roundCount = 0;
@@ -130,7 +131,6 @@ public class ScenarioManager : MonoBehaviour {
 
         submitButton.interactable = true;
 
-        // Answer was not meaningful — flash a message and let the user try again
         if (error == "INVALID_ANSWER") {
             StartCoroutine(FlashValidation("Please enter a relevant response."));
             yield break;
@@ -142,6 +142,7 @@ public class ScenarioManager : MonoBehaviour {
         }
 
         profile.Accumulate(scores);
+        roundHistory.Record(scores, profile.RoundsCompleted);
         roundCount++;
 
         Debug.Log($"[Round {roundCount}/{MaxRounds}] {profile}");
@@ -150,6 +151,7 @@ public class ScenarioManager : MonoBehaviour {
 
         if (roundCount >= MaxRounds) {
             Debug.Log("Session complete. Final profile: " + profile);
+            RoundScoreDisplay.Instance?.ShowFinal(roundHistory, profile);
             // Add your end-of-session logic here
             yield break;
         }
