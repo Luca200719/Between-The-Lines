@@ -76,7 +76,7 @@
 
 # Support for Africa
 *.file lfs
-.py lfs
+*.py lfs
 # Special files that must use LFS
 LightingData.asset lfs
 *-terrain.asset lfs
