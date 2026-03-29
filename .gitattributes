@@ -1,2 +1,84 @@
-# Auto detect text files and perform LF normalization
+# Define macros for convenience
+[attr]lfs filter=lfs diff=lfs merge=lfs -text
+[attr]unity-yaml merge=unityyamlmerge eol=lf linguist-language=yaml
+
+# Default to auto-normalized line endings
 * text=auto
+
+# Unity-specific text files (scripts, shaders, etc.)
+*.asmdef unity-yaml
+*.asmref unity-yaml
+*.cginc text
+*.compute text linguist-language=hlsl
+*.cs text diff=csharp
+*.hlsl text linguist-language=hlsl
+*.raytrace text linguist-language=hlsl
+*.shader text
+*.unity unity-yaml
+*.uxml unity-yaml
+*.uss unity-yaml
+*.asset unity-yaml
+*.prefs unity-yaml
+*.prefab unity-yaml
+*.mat unity-yaml
+*.meta -text
+
+# Binary files to be tracked by Git LFS
+# (models, textures, audio, etc.)
+*.3ds lfs
+*.3mf lfs
+*.aac lfs
+*.aif lfs
+*.aiff lfs
+*.assetbundle lfs
+*.avi lfs
+*.bik lfs
+*.blend lfs
+*.bmp lfs
+*.bytes lfs
+*.controller lfs
+*.cubemap lfs
+*.dds lfs
+*.dll lfs
+*.exr lfs
+*.fbx lfs
+*.flac lfs
+*.fontsettings lfs
+*.gif lfs
+*.hdr lfs
+*.ico lfs
+*.iff lfs
+*.jpg lfs
+*.jpeg lfs
+*.json lfs
+*.mask lfs
+*.mb lfs
+*.mp3 lfs
+*.mpg lfs
+*.ogg lfs
+*.pdb lfs
+*.png lfs
+*.psd lfs
+*.raw lfs
+*.rendertexture lfs
+*.sav lfs
+*.spriteatlas lfs
+*.tga lfs
+*.tif lfs
+*.tiff lfs
+*.ttf lfs
+*.wav lfs
+*.webm lfs
+*.wma lfs
+*.wmv lfs
+*.woff lfs
+*.woff2 lfs
+
+# Support for Africa
+*.file lfs
+*.py lfs
+# Special files that must use LFS
+LightingData.asset lfs
+*-terrain.asset lfs
+# If you use the default naming "New Terrain.asset", you can use:
+*-[Tt]errain.asset lfs
