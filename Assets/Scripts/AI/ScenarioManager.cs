@@ -38,7 +38,7 @@ public class ScenarioManager : MonoBehaviour {
 
     // ── State ─────────────────────────────────────────────────────────
     private SocialProfile profile = new();
-    private RoundHistory roundHistory = new();
+    private RoundHistory roundHistory = RoundHistory.Current;
     private AIScorer scorer;
     public HashSet<int> usedIds = new();
     private int roundCount = 0;
@@ -149,10 +149,11 @@ public class ScenarioManager : MonoBehaviour {
 
         yield return FadeOverlay(false);
 
-        if (roundCount >= MaxRounds) {
+        if (roundCount >= MaxRounds)
+        {
             Debug.Log("Session complete. Final profile: " + profile);
-            RoundScoreDisplay.Instance?.ShowFinal(roundHistory, profile);
-            // Add your end-of-session logic here
+            RoundHistory.Current.StoreFinal(profile);
+            SceneFader.Instance.FadeToScene(2);
             yield break;
         }
 
