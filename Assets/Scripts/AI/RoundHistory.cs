@@ -10,7 +10,7 @@ namespace SocialScenarios
     /// them mapped to 0-10 for display.
     /// </summary>
     [Serializable]
-    public class RoundScore
+    public class RoundScore : Monobehaviour
     {
         public int Round;
         public float Assertiveness;
