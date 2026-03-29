@@ -20,6 +20,7 @@ namespace SocialScenarios {
             RoundsCompleted = 0;
         }
 
+        // Accumulate a new score into the running average
         public void Accumulate(float[] scores) {
             if (scores.Length != 5)
                 throw new ArgumentException("Score vector must have exactly 5 values.");

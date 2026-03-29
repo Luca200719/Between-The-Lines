@@ -1,8 +1,9 @@
+using SocialScenarios;
 using System;
-using UnityEngine;
-using TMPro;
 using System.Collections;
+using TMPro;
 using Unity.VisualScripting;
+using UnityEngine;
 
 [Serializable]
 public struct DialogueLine {
@@ -25,16 +26,18 @@ public class Dialogue : MonoBehaviour {
 
     public DialogueLine[] lines;
 
+    [Header("Scenario Integration")]
+    [TextArea(2, 6)]
+    public string question; // The question to ask the user after this dialogue
+
     public void Start() {
         textBoxA = transform.GetChild(0).GetChild(2).GetComponent<TextMeshProUGUI>();
         textBoxB = transform.GetChild(0).GetChild(3).GetComponent<TextMeshProUGUI>();
         bubbleBoxA = transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
         bubbleBoxB = transform.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>();
         playerSpeaker = GameObject.FindGameObjectWithTag("audio").GetComponent<AudioSource>();
-        audioClipA = audioClips[UnityEngine.Random.Range(0,13)];
-        audioClipB = audioClips[UnityEngine.Random.Range(0,13)];
-
-
+        audioClipA = audioClips[UnityEngine.Random.Range(0, 13)];
+        audioClipB = audioClips[UnityEngine.Random.Range(0, 13)];
 
         bubbleBoxA.gameObject.SetActive(false);
         bubbleBoxB.gameObject.SetActive(false);
@@ -49,7 +52,6 @@ public class Dialogue : MonoBehaviour {
     IEnumerator RunDialogue() {
         IsPlaying = true;
 
-
         foreach (var line in lines) {
             bool isA = line.speaker == DialogueLine.Speaker.A;
             string text = line.text;
@@ -57,7 +59,8 @@ public class Dialogue : MonoBehaviour {
             if (isA) {
                 textBoxB.text = string.Empty;
                 playerSpeaker.generator = audioClipA;
-            } else {
+            }
+            else {
                 textBoxA.text = string.Empty;
                 playerSpeaker.generator = audioClipB;
             }
@@ -94,5 +97,17 @@ public class Dialogue : MonoBehaviour {
         bubbleBoxB.gameObject.SetActive(false);
 
         IsPlaying = false;
+
+        // Build the full conversation text from lines and notify ScenarioManager
+        var conversationBuilder = new System.Text.StringBuilder();
+        foreach (var line in lines)
+            conversationBuilder.AppendLine($"{line.speaker}: {line.text}");
+
+        ScenarioManager scenarioManager = ScenarioManager.Instance;
+        if (scenarioManager != null) {
+            DialogueEntry entry = GetComponent<DialogueEntry>();
+            if (entry != null)
+                scenarioManager.BeginRound(entry, conversationBuilder.ToString(), question);
+        }
     }
 }

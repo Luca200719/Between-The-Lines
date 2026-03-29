@@ -9,8 +9,15 @@ namespace SocialScenarios {
         private const string API_URL = "https://api.anthropic.com/v1/messages";
         private const string MODEL = "claude-haiku-4-5-20251001";
 
-        [SerializeField] string apiKey = "";
+        [Header("Anthropic API Key")]
+        public string apiKey;
 
+        /// <summary>
+        /// Scores a round given the dialogue conversation that was playing,
+        /// the question asked, and the user's typed answer.
+        /// Returns float[5]: [assertiveness, empathy, emotional_regulation,
+        ///                     social_confidence, prosocial_intent]
+        /// </summary>
         public IEnumerator ScoreRound(
             string conversationContext,
             string question,
@@ -71,7 +78,10 @@ namespace SocialScenarios {
             }
         }
 
+        // ── Serialization ─────────────────────────────────────────────
+
         private static string BuildRequestJson(string system, string userMsg) {
+            // Manual build avoids nested object serialization issues with JsonUtility
             return "{" +
                 $"\"model\":\"{MODEL}\"," +
                 "\"max_tokens\":100," +
