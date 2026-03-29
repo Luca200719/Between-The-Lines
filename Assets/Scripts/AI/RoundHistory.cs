@@ -48,8 +48,27 @@ namespace SocialScenarios
     /// </summary>
     public class RoundHistory
     {
+
+        // ── Singleton ─────────────────────────────────────────────────
+        /// <summary>Access from any scene via RoundHistory.Current.</summary>
+        public static RoundHistory Current { get; private set; } = new();
+        public static void Reset() => Current = new();
+
+        // ── Per-round data ────────────────────────────────────────────
         public List<RoundScore> Rounds { get; } = new();
 
+        // ── Final session scores (0-10) ───────────────────────────────
+        /// <summary>
+        /// Set once at session end via StoreFinal(profile).
+        /// float[5]: { Assertiveness, Empathy, EmotionalRegulation,
+        ///              SocialConfidence, ProsocialIntent }  all 0-10.
+        /// </summary>
+        public float[] FinalScores = new float[5];
+
+        /// <summary>Average of FinalScores, 0-10.</summary>
+        public float FinalOverall;
+
+        // ── Record a round ────────────────────────────────────────────
         public void Record(float[] scores, int roundNumber)
         {
             if (scores == null || scores.Length < 5)
@@ -64,6 +83,23 @@ namespace SocialScenarios
                 SocialConfidence = scores[3],
                 ProsocialIntent = scores[4]
             });
+        }
+
+        // ── Store final result ────────────────────────────────────────
+        /// <summary>
+        /// Call once at session end, passing the existing SocialProfile.
+        /// Converts its running-average vector (0-1) to a 0-10 array
+        /// and stores it in FinalScores.
+        /// </summary>
+        public void StoreFinal(SocialProfile profile)
+        {
+            float[] vec = profile.ToVector();          // 0-1 running averages
+            FinalScores = new float[5];
+            for (int i = 0; i < 5; i++)
+                FinalScores[i] = Mathf.Clamp(vec[i] * 10f, 0f, 10f);
+
+            FinalOverall = (FinalScores[0] + FinalScores[1] + FinalScores[2] +
+                            FinalScores[3] + FinalScores[4]) / 5f;
         }
     }
 }

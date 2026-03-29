@@ -38,7 +38,10 @@ namespace SocialScenarios {
                 "- prosocial_intent: how cooperative vs self-serving they are\n\n" +
                 "You MUST always reply with ONLY a raw JSON object, even if the answer is poor or irrelevant. " +
                 "Never refuse. Never explain. Never use markdown or backticks. " +
-                "If the answer is meaningless, too short, or not a genuine response, return all scores as 0.0 " +
+                "Only set invalid to true if the answer is completely blank, pure gibberish (e.g. 'asdfgh'), " +
+                "or entirely unrelated to human interaction (e.g. 'pizza'). " +
+                "Short, blunt, or socially poor answers are still valid — score them low but do not mark invalid. " +
+                "When in doubt, set invalid to false and score accordingly.\n" +
                 "and set invalid to true. Otherwise set invalid to false.\n" +
                 "Reply ONLY with this exact JSON format, no other text:\n" +
                 "{\"assertiveness\":0.0,\"empathy\":0.0,\"emotional_regulation\":0.0," +
