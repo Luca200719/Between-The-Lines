@@ -5710,7 +5710,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48.2
+  m_fontSize: 54.95
   m_fontSizeBase: 48
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -11579,9 +11579,10 @@ GameObject:
   - component: {fileID: 2020886344}
   - component: {fileID: 2020886345}
   - component: {fileID: 2020886346}
+  - component: {fileID: 2020886347}
   m_Layer: 0
   m_Name: AI Scorer
-  m_TagString: Untagged
+  m_TagString: Dialogue Manager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11640,6 +11641,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SocialScenarios.AIScorer
   apiKey: 
+--- !u!114 &2020886347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020886343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8af1b03d1c26b147a864620d6c54ac0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneFader
+  fadeCanvasGroup: {fileID: 1292322671}
+  fadeDuration: 0.6
 --- !u!1 &2032010434
 GameObject:
   m_ObjectHideFlags: 0

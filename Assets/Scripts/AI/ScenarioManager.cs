@@ -51,6 +51,7 @@ public class ScenarioManager : MonoBehaviour {
     // ── Lifecycle ─────────────────────────────────────────────────────
 
     void Awake() {
+        DontDestroyOnLoad(this);
         if (Instance != null && Instance != this) {
             Destroy(gameObject);
             return;
