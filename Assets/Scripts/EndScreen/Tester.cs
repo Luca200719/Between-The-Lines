@@ -22,7 +22,7 @@ public class Tester : MonoBehaviour
         yield return null;
         yield return null;
 
-        float[] testScores = score.FinalOveral;
+        float[] testScores = score.FinalScores;
         scoreTracker.SubmitScores(testScores);
         endScreen.Show();
         scoreBars.Show(testScores);
