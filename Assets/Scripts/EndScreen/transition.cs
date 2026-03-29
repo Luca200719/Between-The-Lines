@@ -3,13 +3,15 @@ using UnityEngine;
 
 public class transition : MonoBehaviour
 {
-    public CanvasGroup canvasGroup;
+    CanvasGroup canvasGroup;
+
     public float fadeDuration = 2f; // seconds
 
     private float timer = 0f;
 
     void Start()
     {
+        canvasGroup = GetComponent<CanvasGroup>();
         canvasGroup.alpha = 1f; // start fully visible
         StartCoroutine(FadeCanvas());
     }
