@@ -2,6 +2,10 @@ using System;
 using UnityEngine;
 
 namespace SocialScenarios {
+    /// <summary>
+    /// Attach this to each dialogue cube GameObject in your scene.
+    /// Fill in the fields in the Inspector.
+    /// </summary>
     public class DialogueEntry : MonoBehaviour {
         [Header("Identity")]
         public int id;

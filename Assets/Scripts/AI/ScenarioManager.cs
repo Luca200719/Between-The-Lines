@@ -1,164 +1,256 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
+using TMPro;
+using SocialScenarios;
 
-namespace SocialScenarios {
-    public class ScenarioManager : MonoBehaviour {
-        [Header("Dialogue Cubes")]
-        public List<DialogueEntry> dialogues = new();
+/// <summary>
+/// Attach to an empty GameObject alongside AIScorer.
+///
+/// Canvas hierarchy:
+///   Canvas (has CanvasGroup, Alpha=0, Interactable=false, BlocksRaycasts=false)
+///    └── Panel
+///         ├── PromptText       (TMP_Text)
+///         ├── AnswerInput      (TMP_InputField)
+///         ├── SubmitButton     (Button)
+///         └── ValidationText   (TMP_Text) ← add this, style red, alpha 0
+/// </summary>
+public class ScenarioManager : MonoBehaviour {
+    public static ScenarioManager Instance { get; private set; }
 
-        [Header("Canvas Overlay")]
-        public CanvasGroup overlayCanvasGroup;
-        public TMP_Text promptText;
-        public TMP_InputField answerInput;
-        public Button submitButton;
-        public TMP_Text statusText;
+    [Header("Dialogue Cubes")]
+    public List<DialogueEntry> dialogues = new();
 
-        [Header("Camera")]
-        public Transform cameraTransform;
-        public float cameraMoveDuration = 1.5f;
-        public float fadeDuration = 0.4f;
+    [Header("Starting Dialogue")]
+    public int startId = 0;
 
-        private SocialProfile profile = new();
-        private AIScorer scorer;
-        private HashSet<int> usedIds = new();
-        private DialogueEntry currentDialogue;
-        private int roundCount = 0;
-        private const int MaxRounds = 5;
+    [Header("Canvas Overlay")]
+    public CanvasGroup overlayCanvasGroup;
+    public TMP_Text promptText;
+    public TMP_InputField answerInput;
+    public Button submitButton;
+    public TMP_Text validationTextBubble;
+    public TMP_Text validationText;
 
-        void Awake() {
-            scorer = GetComponent<AIScorer>();
-            overlayCanvasGroup.alpha = 0;
-            overlayCanvasGroup.interactable = false;
-            overlayCanvasGroup.blocksRaycasts = false;
-            statusText.text = "";
+    [Header("Camera")]
+    public float fadeDuration = 0.4f;
 
-            submitButton.onClick.AddListener(OnSubmit);
+    // ── State ─────────────────────────────────────────────────────────
+    private SocialProfile profile = new();
+    private AIScorer scorer;
+    public HashSet<int> usedIds = new();
+    private int roundCount = 0;
+    private const int MaxRounds = 5;
+
+    private string pendingConversation;
+    private string pendingQuestion;
+    private DialogueEntry pendingEntry;
+
+    // ── Lifecycle ─────────────────────────────────────────────────────
+
+    void Awake() {
+        if (Instance != null && Instance != this) {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
+        scorer = GetComponent<AIScorer>();
+
+        overlayCanvasGroup.alpha = 0f;
+        overlayCanvasGroup.interactable = false;
+        overlayCanvasGroup.blocksRaycasts = false;
+
+        validationText.alpha = 0f;
+        validationTextBubble.alpha = 0f;
+
+        submitButton.onClick.AddListener(OnSubmit);
+    }
+
+    void Start() {
+        DialogueEntry start = dialogues.Find(d => d != null && d.id == startId);
+
+        if (start == null) {
+            Debug.LogWarning($"ScenarioManager: no DialogueEntry found with startId={startId}.");
+            return;
         }
 
-        public void BeginRound(DialogueEntry dialogue, string question) {
-            if (roundCount >= MaxRounds) return;
-
-            currentDialogue = dialogue;
-            promptText.text = question;
-            answerInput.text = "";
-            statusText.text = "";
-
-            StartCoroutine(FadeOverlay(true, () => answerInput.ActivateInputField()));
+        if (CameraController.Instance == null) {
+            Debug.LogError("ScenarioManager: CameraController.Instance is null.");
+            return;
         }
 
-        private void OnSubmit() {
-            if (string.IsNullOrWhiteSpace(answerInput.text)) return;
-            StartCoroutine(ProcessRound(answerInput.text));
+        if (start.cameraTarget == null) {
+            Debug.LogError($"ScenarioManager: cameraTarget not assigned on DialogueEntry id={startId}.");
+            return;
         }
 
-        private IEnumerator ProcessRound(string userAnswer) {
-            submitButton.interactable = false;
-            statusText.text = "Thinking...";
+        CameraController.Instance.SnapTo(start.cameraTarget);
+    }
 
-            float[] scores = null;
-            string error = null;
+    // ── Called by Dialogue.cs when a conversation finishes ────────────
 
-            yield return scorer.ScoreRound(
-                conversationContext: currentDialogue.conversationText,
-                question: promptText.text,
-                userAnswer: userAnswer,
-                onComplete: s => scores = s,
-                onError: e => error = e
-            );
+    public void BeginRound(DialogueEntry entry, string conversationText, string question) {
+        if (roundCount >= MaxRounds) return;
 
-            if (error != null) {
-                statusText.text = "Something went wrong. Please try again.";
-                submitButton.interactable = true;
-                Debug.LogError(error);
-                yield break;
-            }
+        pendingEntry = entry;
+        pendingConversation = conversationText;
+        pendingQuestion = question;
 
-            profile.Accumulate(scores);
-            roundCount++;
-            Debug.Log($"[Round {roundCount}/{MaxRounds}] {profile}");
+        usedIds.Add(entry.id);
 
-            yield return FadeOverlay(false);
+        promptText.text = question;
+        answerInput.text = "";
 
-            if (roundCount >= MaxRounds) {
-                Debug.Log("Session complete. Final profile: " + profile);
-                yield break;
-            }
+        StartCoroutine(FadeOverlay(true, () => answerInput.ActivateInputField()));
+    }
 
-            DialogueEntry next = GetBestMatch();
-            if (next == null) {
-                Debug.LogWarning("No unused dialogues left.");
-                yield break;
-            }
+    // ── Submit ────────────────────────────────────────────────────────
 
-            usedIds.Add(next.id);
-            yield return MoveCamera(next.cameraTarget);
+    private void OnSubmit() {
+        string answer = answerInput.text.Trim();
+        if (string.IsNullOrWhiteSpace(answer)) return;
+        StartCoroutine(ProcessRound(answer));
+    }
 
-            Debug.Log($"Camera arrived at: {next.title}");
+    private IEnumerator ProcessRound(string userAnswer) {
+        submitButton.interactable = false;
+
+        float[] scores = null;
+        string error = null;
+
+        yield return scorer.ScoreRound(
+            conversationContext: pendingConversation,
+            question: pendingQuestion,
+            userAnswer: userAnswer,
+            onComplete: s => scores = s,
+            onError: e => error = e
+        );
+
+        submitButton.interactable = true;
+
+        if (error == "INVALID_ANSWER") {
+            StartCoroutine(FlashValidation("Please enter a relevant response."));
+            yield break;
         }
 
-        private DialogueEntry GetBestMatch() {
-            float[] userVec = profile.ToVector();
-            DialogueEntry best = null;
-            float bestScore = float.MinValue;
-
-            foreach (var d in dialogues) {
-                if (usedIds.Contains(d.id)) continue;
-
-                float score = CosineSimilarity(userVec, d.TraitVector);
-                if (score > bestScore) { bestScore = score; best = d; }
-            }
-
-            return best;
+        if (error != null) {
+            Debug.LogError($"Scoring error: {error}");
+            yield break;
         }
 
-        private static float CosineSimilarity(float[] a, float[] b) {
-            float dot = 0, magA = 0, magB = 0;
-            for (int i = 0; i < a.Length; i++) {
-                dot += a[i] * b[i];
-                magA += a[i] * a[i];
-                magB += b[i] * b[i];
-            }
-            float denom = Mathf.Sqrt(magA) * Mathf.Sqrt(magB);
-            return denom < 1e-6f ? 0f : dot / denom;
+        profile.Accumulate(scores);
+        roundCount++;
+
+        Debug.Log($"[Round {roundCount}/{MaxRounds}] {profile}");
+
+        yield return FadeOverlay(false);
+
+        if (roundCount >= MaxRounds) {
+            Debug.Log("Session complete. Final profile: " + profile);
+            // Add your end-of-session logic here
+            yield break;
         }
 
-        private IEnumerator MoveCamera(Transform target) {
-            Vector3 startPos = cameraTransform.position;
-            Quaternion startRot = cameraTransform.rotation;
-            float elapsed = 0f;
-
-            while (elapsed < cameraMoveDuration) {
-                elapsed += Time.deltaTime;
-                float t = Mathf.SmoothStep(0f, 1f, elapsed / cameraMoveDuration);
-                cameraTransform.position = Vector3.Lerp(startPos, target.position, t);
-                cameraTransform.rotation = Quaternion.Slerp(startRot, target.rotation, t);
-                yield return null;
-            }
-
-            cameraTransform.position = target.position;
-            cameraTransform.rotation = target.rotation;
+        DialogueEntry next = GetBestMatch();
+        if (next == null) {
+            Debug.LogWarning("No unused dialogues remaining.");
+            yield break;
         }
 
-        private IEnumerator FadeOverlay(bool fadeIn, System.Action onComplete = null) {
-            float start = fadeIn ? 0f : 1f;
-            float end = fadeIn ? 1f : 0f;
-            float elapsed = 0f;
+        bool arrived = false;
+        CameraController.Instance.MoveTo(next.cameraTarget, () => arrived = true);
+        yield return new WaitUntil(() => arrived);
 
-            overlayCanvasGroup.interactable = fadeIn;
-            overlayCanvasGroup.blocksRaycasts = fadeIn;
+        Dialogue nextDialogue = next.GetComponent<Dialogue>();
+        if (nextDialogue != null)
+            DialogueManager.dialogueManager.PlayDialogue(nextDialogue);
+        else
+            Debug.LogWarning($"No Dialogue component on cube: {next.title}");
+    }
 
-            while (elapsed < fadeDuration) {
-                elapsed += Time.deltaTime;
-                overlayCanvasGroup.alpha = Mathf.Lerp(start, end, elapsed / fadeDuration);
-                yield return null;
-            }
+    // ── Validation Flash ──────────────────────────────────────────────
 
-            overlayCanvasGroup.alpha = end;
-            onComplete?.Invoke();
+    private IEnumerator FlashValidation(string message) {
+        validationText.text = message;
+        validationTextBubble.text = message;
+
+        CanvasGroup textGroup = validationText.GetComponent<CanvasGroup>(); 
+        CanvasGroup bubbleGroup = validationTextBubble.GetComponent<CanvasGroup>();
+
+        // Fade in
+        float elapsed = 0f;
+        while (elapsed < 0.2f) {
+            elapsed += Time.deltaTime;
+            textGroup.alpha = Mathf.Clamp01(elapsed / 0.2f);
+            bubbleGroup.alpha = Mathf.Clamp01(elapsed / 0.2f);
+            yield return null;
         }
+        validationText.alpha = 1f;
+        validationTextBubble.alpha = 1f;
+
+        yield return new WaitForSeconds(1.5f);
+
+        // Fade out
+        elapsed = 0f;
+        while (elapsed < 0.2f) {
+            elapsed += Time.deltaTime;
+            textGroup.alpha = Mathf.Clamp01(1f - elapsed / 0.2f);
+            bubbleGroup.alpha = Mathf.Clamp01(1f - elapsed / 0.2f);
+            yield return null;
+        }
+        validationText.alpha = 0f;
+        validationTextBubble.alpha = 0f;
+        validationText.text = "";
+        validationTextBubble.text = "";
+    }
+
+    // ── Matching ──────────────────────────────────────────────────────
+
+    private DialogueEntry GetBestMatch() {
+        float[] userVec = profile.ToVector();
+        DialogueEntry best = null;
+        float bestScore = float.MinValue;
+
+        foreach (var d in dialogues) {
+            if (d == null || usedIds.Contains(d.id)) continue;
+
+            float score = CosineSimilarity(userVec, d.TraitVector);
+            if (score > bestScore) { bestScore = score; best = d; }
+        }
+
+        return best;
+    }
+
+    private static float CosineSimilarity(float[] a, float[] b) {
+        float dot = 0, magA = 0, magB = 0;
+        for (int i = 0; i < a.Length; i++) {
+            dot += a[i] * b[i];
+            magA += a[i] * a[i];
+            magB += b[i] * b[i];
+        }
+        float denom = Mathf.Sqrt(magA) * Mathf.Sqrt(magB);
+        return denom < 1e-6f ? 0f : dot / denom;
+    }
+
+    // ── Fade Overlay ──────────────────────────────────────────────────
+
+    private IEnumerator FadeOverlay(bool fadeIn, System.Action onComplete = null) {
+        float start = fadeIn ? 0f : 1f;
+        float end = fadeIn ? 1f : 0f;
+        float elapsed = 0f;
+
+        overlayCanvasGroup.interactable = fadeIn;
+        overlayCanvasGroup.blocksRaycasts = fadeIn;
+
+        while (elapsed < fadeDuration) {
+            elapsed += Time.deltaTime;
+            overlayCanvasGroup.alpha = Mathf.Lerp(start, end, elapsed / fadeDuration);
+            yield return null;
+        }
+
+        overlayCanvasGroup.alpha = end;
+        onComplete?.Invoke();
     }
 }
