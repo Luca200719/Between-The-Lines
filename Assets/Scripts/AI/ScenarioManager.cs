@@ -36,16 +36,16 @@ public class ScenarioManager : MonoBehaviour {
     [Header("Camera")]
     public float fadeDuration = 0.4f;
 
+
     // ── State ─────────────────────────────────────────────────────────
     private SocialProfile profile = new();
     // RoundHistory is a plain C# class with its own singleton — use Current
     // rather than a separate local instance so all systems read the same data.
     private RoundHistory roundHistory => RoundHistory.Current;
-    private RoundHistory roundHistory = RoundHistory.Current;
     private AIScorer scorer;
     public HashSet<int> usedIds = new();
     private int roundCount = 0;
-    private const int MaxRounds = 5;
+    private const int MaxRounds = 3;
 
     // ── Final Results (readable from Inspector or any script via ScenarioManager.Instance) ──
     /// <summary>Per-trait final scores 0-10. [0]=Assertiveness [1]=Empathy
@@ -67,6 +67,7 @@ public class ScenarioManager : MonoBehaviour {
 
     void Awake() {
         DontDestroyOnLoad(this);
+
         if (Instance != null && Instance != this) {
             Destroy(gameObject);
             return;
@@ -174,19 +175,20 @@ public class ScenarioManager : MonoBehaviour {
 
         yield return FadeOverlay(false);
 
-        if (roundCount >= MaxRounds)
-        {
+        if (roundCount >= MaxRounds) {
             Debug.Log("Session complete. Final profile: " + profile);
 
             roundHistory.StoreFinal(profile);
 
-            // Mirror final results onto this MonoBehaviour so they are
-            // visible in the Inspector and accessible via ScenarioManager.Instance.
+            // Store final results on this MonoBehaviour — readable from any
+            // script via ScenarioManager.Instance or visible in the Inspector.
             FinalScores = roundHistory.FinalScores;
             FinalOverall = roundHistory.FinalOverall;
 
-            RoundScoreDisplay.Instance?.ShowFinal(roundHistory, profile);
-            RoundHistory.Current.StoreFinal(profile);
+            Debug.Log($"FinalOverall={FinalOverall:F1}  Scores=" +
+                      $"[{FinalScores[0]:F1}, {FinalScores[1]:F1}, {FinalScores[2]:F1}, " +
+                      $"{FinalScores[3]:F1}, {FinalScores[4]:F1}]");
+
             SceneFader.Instance.FadeToScene(2);
             yield break;
         }

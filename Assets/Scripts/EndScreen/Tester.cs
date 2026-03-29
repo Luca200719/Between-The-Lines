@@ -7,10 +7,8 @@ public class Tester : MonoBehaviour
     public ScoreTracker scoreTracker;
     public EndScreen endScreen;
     public ScoreBars scoreBars;
-
     void Start()
     {
-        score = ScenarioManager.Instance.FinalOverall;
         StartCoroutine(RunTest());
     }
 
@@ -18,7 +16,7 @@ public class Tester : MonoBehaviour
     {
         yield return null;
         yield return null;
-        float[] testScores = RoundHistory.Current.FinalScores;
+        float[] testScores = ScenarioManager.Instance.FinalScores;
         scoreTracker.SubmitScores(testScores);
         endScreen.Show();
         scoreBars.Show(testScores);
