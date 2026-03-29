@@ -17,6 +17,7 @@ namespace SocialScenarios {
         /// the question asked, and the user's typed answer.
         /// Returns float[5]: [assertiveness, empathy, emotional_regulation,
         ///                     social_confidence, prosocial_intent]
+        /// Invokes onError with "INVALID_ANSWER" if the answer was not meaningful.
         /// </summary>
         public IEnumerator ScoreRound(
             string conversationContext,
@@ -24,6 +25,7 @@ namespace SocialScenarios {
             string userAnswer,
             Action<float[]> onComplete,
             Action<string> onError) {
+
             string systemPrompt =
                 "You are a social psychology scoring engine. " +
                 "You will receive a conversation that a user just watched, " +
@@ -34,9 +36,13 @@ namespace SocialScenarios {
                 "- emotional_regulation: how composed vs reactive they are\n" +
                 "- social_confidence: how comfortable they seem in the situation\n" +
                 "- prosocial_intent: how cooperative vs self-serving they are\n\n" +
-                "Reply ONLY with this JSON, no other text:\n" +
+                "You MUST always reply with ONLY a raw JSON object, even if the answer is poor or irrelevant. " +
+                "Never refuse. Never explain. Never use markdown or backticks. " +
+                "If the answer is meaningless, too short, or not a genuine response, return all scores as 0.0 " +
+                "and set invalid to true. Otherwise set invalid to false.\n" +
+                "Reply ONLY with this exact JSON format, no other text:\n" +
                 "{\"assertiveness\":0.0,\"empathy\":0.0,\"emotional_regulation\":0.0," +
-                "\"social_confidence\":0.0,\"prosocial_intent\":0.0}";
+                "\"social_confidence\":0.0,\"prosocial_intent\":0.0,\"invalid\":false}";
 
             string userMessage =
                 $"Conversation:\n{conversationContext}\n\n" +
@@ -62,10 +68,28 @@ namespace SocialScenarios {
             try {
                 var raw = request.downloadHandler.text;
                 var resp = JsonUtility.FromJson<APIResponse>(raw);
-                var scores = JsonUtility.FromJson<ScoreResult>(resp.content[0].text.Trim());
 
-                onComplete?.Invoke(new float[]
-                {
+                // Strip markdown code fences in case the model ignores instructions
+                var jsonText = resp.content[0].text.Trim()
+                    .Replace("```json", "")
+                    .Replace("```", "")
+                    .Trim();
+
+                // If it still doesn't look like JSON, the model refused to score
+                if (!jsonText.StartsWith("{")) {
+                    onError?.Invoke("INVALID_ANSWER");
+                    yield break;
+                }
+
+                var scores = JsonUtility.FromJson<ScoreResult>(jsonText);
+
+                // Model flagged the answer as invalid
+                if (scores.invalid) {
+                    onError?.Invoke("INVALID_ANSWER");
+                    yield break;
+                }
+
+                onComplete?.Invoke(new float[] {
                     scores.assertiveness,
                     scores.empathy,
                     scores.emotional_regulation,
@@ -84,7 +108,7 @@ namespace SocialScenarios {
             // Manual build avoids nested object serialization issues with JsonUtility
             return "{" +
                 $"\"model\":\"{MODEL}\"," +
-                "\"max_tokens\":100," +
+                "\"max_tokens\":150," +
                 $"\"system\":{JsonString(system)}," +
                 "\"messages\":[{\"role\":\"user\",\"content\":" + JsonString(userMsg) + "}]" +
             "}";
@@ -106,6 +130,7 @@ namespace SocialScenarios {
             public float emotional_regulation;
             public float social_confidence;
             public float prosocial_intent;
+            public bool invalid;
         }
     }
 }

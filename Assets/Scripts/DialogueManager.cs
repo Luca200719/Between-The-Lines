@@ -1,5 +1,4 @@
 using SocialScenarios;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,24 +11,41 @@ public class DialogueManager : MonoBehaviour {
             return;
         }
         dialogueManager = this;
-        DontDestroyOnLoad(gameObject);
+        // Removed DontDestroyOnLoad — not needed for a single-scene setup
+        // and caused FindObjectsByType to break across scene loads
     }
 
     void Start() {
-        List<Dialogue> all = new(FindObjectsByType<Dialogue>(FindObjectsSortMode.None));
+        // Defer to ScenarioManager for the starting dialogue
+        // so startId is respected and camera snap is consistent
+        ScenarioManager sm = ScenarioManager.Instance;
+        if (sm == null) {
+            Debug.LogError("DialogueManager: No ScenarioManager instance found.");
+            return;
+        }
 
-        Dialogue picked = all[Random.Range(0, all.Count)];
+        //List<DialogueEntry> available = sm.dialogues.FindAll(d => d != null);
+        //if (available.Count == 0) {
+        //    Debug.LogError("DialogueManager: No valid DialogueEntries found.");
+        //    return;
+        //}
 
-        // Mark it as used in ScenarioManager so it won't be picked again
-        DialogueEntry entry = picked.GetComponent<DialogueEntry>();
-        if (entry != null && ScenarioManager.Instance != null)
-            ScenarioManager.Instance.usedIds.Add(entry.id);
+        DialogueEntry startEntry = sm.dialogues.Find(d => d.id == sm.startId);
+        if (startEntry == null) {
+            Debug.LogError($"DialogueManager: No DialogueEntry found with startId={sm.startId}.");
+            return;
+        }
 
-        // Move camera then play
-        if (entry != null && CameraController.Instance != null)
-            CameraController.Instance.MoveTo(entry.cameraTarget, () => picked.Play());
-        else
-            picked.Play();
+        sm.usedIds.Add(startEntry.id);
+
+        Dialogue dialogue = startEntry.GetComponent<Dialogue>();
+        if (dialogue == null) {
+            Debug.LogError($"DialogueManager: No Dialogue component on startId={sm.startId}.");
+            return;
+        }
+
+        // Camera already snapped in ScenarioManager.Awake, so just play
+        dialogue.Play();
     }
 
     /// <summary>Called by ScenarioManager to play a specific dialogue after camera arrives.</summary>

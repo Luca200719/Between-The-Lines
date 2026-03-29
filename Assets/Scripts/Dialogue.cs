@@ -30,14 +30,16 @@ public class Dialogue : MonoBehaviour {
     [TextArea(2, 6)]
     public string question; // The question to ask the user after this dialogue
 
-    public void Start() {
+    public void Awake() {
         textBoxA = transform.GetChild(0).GetChild(2).GetComponent<TextMeshProUGUI>();
         textBoxB = transform.GetChild(0).GetChild(3).GetComponent<TextMeshProUGUI>();
         bubbleBoxA = transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
         bubbleBoxB = transform.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>();
+
         playerSpeaker = GameObject.FindGameObjectWithTag("audio").GetComponent<AudioSource>();
-        audioClipA = audioClips[UnityEngine.Random.Range(0, 13)];
-        audioClipB = audioClips[UnityEngine.Random.Range(0, 13)];
+
+        audioClipA = audioClips[UnityEngine.Random.Range(0, audioClips.Length)];
+        audioClipB = audioClips[UnityEngine.Random.Range(0, audioClips.Length)];
 
         bubbleBoxA.gameObject.SetActive(false);
         bubbleBoxB.gameObject.SetActive(false);
